@@ -1,0 +1,2 @@
+# BOSS 直聘 CLI 工具
+boss-agent-cli
