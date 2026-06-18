@@ -147,12 +147,6 @@ output/raw/
 
 执行 skill：`job-matcher`
 
-核心操作：
-
-```bash
-python job-matcher/scripts/score_jobs.py
-```
-
 输入：
 
 ```text

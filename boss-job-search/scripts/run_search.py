@@ -286,6 +286,27 @@ def main():
     raw_dir = output_dir / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
 
+    # 每次搜索只保留“最新一次”结果，避免 Agent 读取过期数据
+    for old in raw_dir.glob("latest_p*.txt"):
+        old.unlink()
+
+    for old_file in [
+        output_dir / "scores.json",
+        output_dir / "asset_matches.json",
+        output_dir / "report.html",
+    ]:
+        if old_file.exists():
+            old_file.unlink()
+
+    for old_dir in [
+        output_dir / "details",
+        output_dir / "tailored_resumes",
+        output_dir / "interview",
+    ]:
+        if old_dir.exists():
+            shutil.rmtree(old_dir)
+        old_dir.mkdir(parents=True, exist_ok=True)
+
     all_jobs = []
     all_errors = []
     source_objects = []
@@ -293,7 +314,7 @@ def main():
     for page in range(1, args.pages + 1):
         code, stdout, stderr = run_boss_search(boss_cmd, args.query, args.city, page)
 
-        raw_file = raw_dir / f"search_raw_{safe_name(args.query)}_{safe_name(args.city)}_p{page}.txt"
+        raw_file = raw_dir / f"latest_p{page}.txt"
         raw_file.write_text(stdout + "\n\n[stderr]\n" + stderr, encoding="utf-8")
 
         if code != 0:
